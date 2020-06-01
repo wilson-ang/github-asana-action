@@ -43,6 +43,7 @@ describe('asana github actions', () => {
       inputs = {
         'asana-pat': asanaPAT,
         'action': 'assert-link',
+        'link-required': 'true',
         'github-token': 'fake'
       }
       github.context.payload = {

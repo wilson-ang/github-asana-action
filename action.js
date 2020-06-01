@@ -86,8 +86,9 @@ module.exports = async function action() {
   switch(ACTION){
     case 'assert-link': {
       const githubToken = core.getInput('github-token', {required: true});
+      const linkRequired = core.getInput('link-required', {required: true}) === 'true';
       const octokit = new github.GitHub(githubToken);
-      const statusState = (foundAsanaTasks.length > 0) ? 'success' : 'error';
+      const statusState = (!linkRequired || foundAsanaTasks.length > 0) ? 'success' : 'error';
       core.info(`setting ${statusState} for ${github.context.payload.pull_request.head.sha}`);
       octokit.repos.createStatus({
         ...github.context.repo,
@@ -144,7 +145,6 @@ module.exports = async function action() {
       return movedTasks;
     }
     default:
-      console.info('lame');
       core.setFailed("unexpected action ${ACTION}");
   }
 }
