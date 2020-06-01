@@ -12,11 +12,15 @@ This action integrates asana with github.
 
 ### `asana-pat`
 
-**Required** Your public access token of asana, you can generate one [here](https://app.asana.com/0/developer-console).
+**Required** Your public access token for asana, you can generate one [here](https://app.asana.com/0/developer-console).
+
+### `action`
+
+**Required** The action to be performed assert-link|add-comment|remove-comment|move-section
 
 ### `github-token`
 
-**Required** A github auth token (used to set statuses)
+**Required for `assert-link`** A github auth token (used to set statuses)
 
 ### `trigger-phrase`
 
@@ -29,6 +33,10 @@ This action integrates asana with github.
 ### `comment-id`
 
 **Required for `remove-comment`, Optional for `add-comment`** When provided in add-comment, gives a unique identifier that can later be used to delete the comment
+
+### `is-pinned`
+
+**Optional for `add-comment`** Mark a comment as pinned in asana
 
 ### `targets`
 
@@ -98,8 +106,8 @@ jobs:
     steps:
       - name: set pr number
         run: echo "::set-env name=PR_NUMBER::$(echo -n "${GITHUB_REF}" | awk 'BEGIN { FS = "/" } ; { print $3 }')"
-      - uses: everphone-gmbh/github-asana-action@5968eaa
-       if: github.event.pull_request.merged
+      - uses: everphone-gmbh/github-asana-action
+        if: github.event.pull_request.merged
         with:
           asana-pat: ${{ secrets.ASANA_PAT }}
           action: 'remove-comment'
@@ -122,7 +130,7 @@ jobs:
         with:
           asana-pat: ${{ secrets.ASANA_PAT }}
           action: assert-link
-          # if the branch is labeled or hotfix, skip this check
+          # if the branch is labeled a hotfix, skip this check
           link-required: ${{ !contains(github.event.pull_request.labels.*.name, 'hotfix') }}
           github-token: ${{ github.token }}
 ```
