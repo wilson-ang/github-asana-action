@@ -4,15 +4,22 @@ const github = require('@actions/github');
 
 describe('asana github actions', () => {
   let inputs = {};
-  const defaultBody = 'Implement https://app.asana.com/0/1178251625498057/1178251625498064 in record time';
+  let defaultBody;
+  let client;
+  let task;
+
   const asanaPAT = process.env['ASANA_PAT'];
   if(!asanaPAT) {
     throw new Error('need ASANA_PAT in the test env');
   }
+  const projectId = process.env['ASANA_PROJECT_ID'];
+  if(!projectId) {
+    throw new Error('need ASANA_PROJECT_ID in the test env');
+  }
 
   const commentId = Date.now().toString();
 
-  beforeAll(() => {
+  beforeAll(async () => {
       // Mock getInput
       jest.spyOn(core, 'getInput').mockImplementation((name, options) => {
         if(inputs[name] === undefined && options && options.required){
@@ -31,6 +38,23 @@ describe('asana github actions', () => {
       github.context.sha = '1234567890123456789012345678901234567890'
   
       process.env['GITHUB_REPOSITORY'] = 'a-cool-owner/a-cool-repo'
+
+      client = await action.buildClient(asanaPAT);
+      if(client === null){
+        throw new Error('client authorization failed');
+      }
+
+      task = await client.tasks.create({
+        'name': 'my fantastic task',
+        'notes': 'generated automatically by the test suite',
+        'projects': [projectId]
+      });
+
+      defaultBody = `Implement https://app.asana.com/0/${projectId}/${task.gid} in record time`;
+    })
+
+    afterAll(async () => {
+      await client.tasks.delete(task);
     })
   
     beforeEach(() => {
@@ -64,7 +88,7 @@ describe('asana github actions', () => {
         }
       });
 
-      await action();
+      await action.action();
 
       expect(mockCreateStatus).toHaveBeenCalledWith({
         owner: 'a-cool-owner',
@@ -91,10 +115,10 @@ describe('asana github actions', () => {
         }
       };
 
-      await expect(action()).resolves.toHaveLength(1);
+      await expect(action.action()).resolves.toHaveLength(1);
 
       // rerunning with the same comment-Id should not create a new comment
-      await expect(action()).resolves.toHaveLength(0);
+      await expect(action.action()).resolves.toHaveLength(0);
     });
 
     test('removing a comment', async () => {
@@ -110,7 +134,7 @@ describe('asana github actions', () => {
         }
       };
 
-      await expect(action()).resolves.toHaveLength(1);
+      await expect(action.action()).resolves.toHaveLength(1);
     });
 
     test('moving sections', async () => {
@@ -125,7 +149,7 @@ describe('asana github actions', () => {
         }
       };
 
-      await expect(action()).resolves.toHaveLength(1);
+      await expect(action.action()).resolves.toHaveLength(1);
 
       inputs = {
         'asana-pat': asanaPAT,
@@ -133,6 +157,23 @@ describe('asana github actions', () => {
         'targets': '[{"project": "Asana bot test environment", "section": "New"}]'
       }
 
-      await expect(action()).resolves.toHaveLength(1);
+      await expect(action.action()).resolves.toHaveLength(1);
+    });
+
+    test('completing task', async () => {
+      inputs = {
+        'asana-pat': asanaPAT,
+        'action': 'complete-task',
+        'is-complete': 'true'
+      }
+      github.context.payload = {
+        pull_request: {
+          'body': defaultBody
+        }
+      };
+
+      await expect(action.action()).resolves.toHaveLength(1);
+      const actualTask = await client.tasks.findById(task.gid);
+      expect(actualTask.completed).toBe(true);
     });
 });

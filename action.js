@@ -49,7 +49,14 @@ async function addComment(client, taskId, commentId, text, isPinned) {
   }
 }
 
-module.exports = async function action() {  
+async function buildClient(asanaPAT) {
+  return asana.Client.create({
+    defaultHeaders: { 'asana-enable': 'new-sections,string_ids' },
+    logAsanaChangeWarnings: false
+  }).useAccessToken(asanaPAT).authorize();
+}
+
+async function action() {  
   const 
     ASANA_PAT = core.getInput('asana-pat', {required: true}),
     ACTION = core.getInput('action', {required: true}),
@@ -61,11 +68,7 @@ module.exports = async function action() {
 
   console.log('pull_request', PULL_REQUEST);
 
-  const client = await asana.Client.create({
-    defaultHeaders: { 'asana-enable': 'new-sections,string_ids' },
-    logAsanaChangeWarnings: false
-  }).useAccessToken(ASANA_PAT).authorize();
-
+  const client = await buildClient(ASANA_PAT);
   if(client === null){
     throw new Error('client authorization failed');
   }
@@ -134,6 +137,22 @@ module.exports = async function action() {
       }
       return removedCommentIds;
     }
+    case 'complete-task': {
+      const isComplete = core.getInput('is-complete') === 'true';
+      const taskIds = [];
+      for(const taskId of foundAsanaTasks) {
+        console.info("marking task", taskId, isComplete ? 'complete' : 'incomplete');
+        try {
+          await client.tasks.update(taskId, {
+            completed: isComplete
+          });
+        } catch (error) {
+          console.error('rejecting promise', error);
+        }
+        taskIds.push(taskId);
+      };
+      return taskIds;
+    }
     case 'move-section': {
       const targetJSON = core.getInput('targets', {required: true});
       const targets = JSON.parse(targetJSON);
@@ -148,3 +167,9 @@ module.exports = async function action() {
       core.setFailed("unexpected action ${ACTION}");
   }
 }
+
+module.exports = {
+  action,
+  default: action,
+  buildClient: buildClient
+};

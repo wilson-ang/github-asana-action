@@ -16,7 +16,7 @@ This action integrates asana with github.
 
 ### `action`
 
-**Required** The action to be performed assert-link|add-comment|remove-comment|move-section
+**Required** The action to be performed assert-link|add-comment|remove-comment|move-section|complete-task
 
 ### `github-token`
 
@@ -49,6 +49,10 @@ if you don't want to move task omit `targets`.
 ### `link-required`
 
 **Required for `assert-link`** When set to true will fail pull requests without an asana link
+
+### `is-complete`
+
+**Required for `complete-task`** If the task is complete or not
 
 ## Example usage
 
@@ -133,4 +137,23 @@ jobs:
           # if the branch is labeled a hotfix, skip this check
           link-required: ${{ !contains(github.event.pull_request.labels.*.name, 'hotfix') }}
           github-token: ${{ github.token }}
+```
+
+```yaml
+name: Mark a task complete
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: everphone-gmbh/github-asana-action
+        if: github.event.pull_request.merged
+        with:
+          asana-pat: ${{ secrets.ASANA_PAT }}
+          action: 'complete-task'
+          is-complete: true
 ```
