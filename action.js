@@ -27,6 +27,22 @@ async function moveSection(client, taskId, targets) {
   });
 }
 
+async function updateTask(client, taskId, targets) {
+  const task = await client.tasks.findById(taskId);
+  if (!task) {
+    core.info(`This task does not exist`);
+    return;
+  }
+  targets.forEach(async (target) => {
+    await client.tasks.update(taskId, {
+      custom_fields: {
+        [target.fieldId]: target.fieldValue,
+      },
+    });
+    core.info(`Task status updated to "${target.fieldValue}"`);
+  });
+}
+
 async function migrateSection(client, targets) {
   targets.forEach(async (target) => {
     const targetProject = await client.projects.findById(target.projectId);
@@ -234,12 +250,17 @@ async function action() {
       const targets = JSON.parse(targetJSON);
       const migratedTasks = [];
       await migrateSection(client, targets);
-      // const movedTasks = [];
-      // for (const taskId of foundAsanaTasks) {
-      //   await moveSection(client, taskId, targets);
-      //   movedTasks.push(taskId);
-      // }
       return migratedTasks;
+    }
+    case "update-task": {
+      const targetJSON = core.getInput("targets", { required: true });
+      const targets = JSON.parse(targetJSON);
+      const updatedTask = [];
+      for (const taskId of foundAsanaTasks) {
+        await updateTask(client, taskId, targets);
+        updatedTask.push(taskId);
+        return updatedTask;
+      }
     }
     default:
       core.setFailed("unexpected action ${ACTION}");
