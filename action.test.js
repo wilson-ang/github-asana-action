@@ -1,7 +1,6 @@
 const action = require("./action");
 const core = require("@actions/core");
 const github = require("@actions/github");
-require("dotenv").config();
 
 describe("asana github actions", () => {
   let inputs = {};
