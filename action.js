@@ -40,26 +40,30 @@ async function migrateSection(client, targets) {
       .then((sections) =>
         sections.find((section) => section.name === target.from)
       );
+    if (!fromSection) {
+      core.info(
+        `The ${target.from} is not found within ${targetProject.name}.`
+      );
+      return;
+    }
     let toSection = await client.sections
       .findByProject(targetProject.gid)
       .then((sections) =>
         sections.find((section) => section.name === target.to)
       );
-    core.info(fromSection.name + " found in " + targetProject.name);
-    let tasks = await client.tasks.findBySection(fromSection.gid);
-    if (!fromSection) {
-      core.info(`The from section is missing.`);
-      return;
-    }
     if (!toSection) {
-      core.info(`The to section is missing.`);
+      core.info(`The ${target.to} is not found within ${targetProject.name}.`);
       return;
     }
-    core.info(tasks.length + " tasks found in " + fromSection.name);
+    const tasksToMigrate = await client.tasks
+      .findBySection(fromSection.gid)
+      .then((tasks) => tasks.data);
     if (toSection) {
-      // await client.sections.addTask(toSection.gid, { task: task.gid });
-      // for (const task of tasks)
-      //   core.info(`Moved projects from ${target.from} to ${target.to}`);
+      for (const taskToMigrate of tasksToMigrate)
+        await client.sections.addTask(toSection.gid, {
+          task: taskToMigrate.gid,
+        });
+      core.info(`Moved projects from ${target.from} to ${target.to}`);
     } else {
       core.error(`Asana section ${target.to} not found.`);
     }

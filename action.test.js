@@ -64,119 +64,119 @@ describe("asana github actions", () => {
     github.context.payload = {};
   });
 
-  // test("asserting a links presence", async () => {
-  //   inputs = {
-  //     "asana-pat": asanaPAT,
-  //     action: "assert-link",
-  //     "link-required": "true",
-  //     "github-token": "fake",
-  //   };
-  //   github.context.payload = {
-  //     pull_request: {
-  //       body: defaultBody,
-  //       head: {
-  //         sha: "1234567890123456789012345678901234567890",
-  //       },
-  //     },
-  //   };
+  test("asserting a links presence", async () => {
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "assert-link",
+      "link-required": "true",
+      "github-token": "fake",
+    };
+    github.context.payload = {
+      pull_request: {
+        body: defaultBody,
+        head: {
+          sha: "1234567890123456789012345678901234567890",
+        },
+      },
+    };
 
-  //   const mockCreateStatus = jest.fn();
-  //   github.GitHub = jest.fn().mockImplementation(() => {
-  //     return {
-  //       repos: {
-  //         createStatus: mockCreateStatus,
-  //       },
-  //     };
-  //   });
+    const mockCreateStatus = jest.fn();
+    github.GitHub = jest.fn().mockImplementation(() => {
+      return {
+        repos: {
+          createStatus: mockCreateStatus,
+        },
+      };
+    });
 
-  //   await action.action();
+    await action.action();
 
-  //   expect(mockCreateStatus).toHaveBeenCalledWith({
-  //     owner: "a-cool-owner",
-  //     repo: "a-cool-repo",
-  //     context: "asana-link-presence",
-  //     state: "success",
-  //     description: "asana link not found",
-  //     sha: "1234567890123456789012345678901234567890",
-  //   });
-  // });
+    expect(mockCreateStatus).toHaveBeenCalledWith({
+      owner: "a-cool-owner",
+      repo: "a-cool-repo",
+      context: "asana-link-presence",
+      state: "success",
+      description: "asana link not found",
+      sha: "1234567890123456789012345678901234567890",
+    });
+  });
 
-  // test("creating a comment", async () => {
-  //   inputs = {
-  //     "asana-pat": asanaPAT,
-  //     action: "add-comment",
-  //     "comment-id": commentId,
-  //     text: "rad stuff",
-  //     "is-pinned": "true",
-  //   };
-  //   // Mock github context
-  //   github.context.payload = {
-  //     pull_request: {
-  //       body: defaultBody,
-  //     },
-  //   };
+  test("creating a comment", async () => {
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "add-comment",
+      "comment-id": commentId,
+      text: "rad stuff",
+      "is-pinned": "true",
+    };
+    // Mock github context
+    github.context.payload = {
+      pull_request: {
+        body: defaultBody,
+      },
+    };
 
-  //   await expect(action.action()).resolves.toHaveLength(1);
+    await expect(action.action()).resolves.toHaveLength(1);
 
-  //   // rerunning with the same comment-Id should not create a new comment
-  //   await expect(action.action()).resolves.toHaveLength(0);
-  // });
+    // rerunning with the same comment-Id should not create a new comment
+    await expect(action.action()).resolves.toHaveLength(0);
+  });
 
-  // test("removing a comment", async () => {
-  //   inputs = {
-  //     "asana-pat": asanaPAT,
-  //     action: "remove-comment",
-  //     // note: relies on the task being created in `creating a comment` test
-  //     "comment-id": commentId,
-  //   };
-  //   github.context.payload = {
-  //     pull_request: {
-  //       body: defaultBody,
-  //     },
-  //   };
+  test("removing a comment", async () => {
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "remove-comment",
+      // note: relies on the task being created in `creating a comment` test
+      "comment-id": commentId,
+    };
+    github.context.payload = {
+      pull_request: {
+        body: defaultBody,
+      },
+    };
 
-  //   await expect(action.action()).resolves.toHaveLength(1);
-  // });
+    await expect(action.action()).resolves.toHaveLength(1);
+  });
 
-  // test("moving sections", async () => {
-  //   inputs = {
-  //     "asana-pat": asanaPAT,
-  //     action: "move-section",
-  //     targets: '[{"project": "Asana bot test environment", "section": "Done"}]',
-  //   };
-  //   github.context.payload = {
-  //     pull_request: {
-  //       body: defaultBody,
-  //     },
-  //   };
+  test("moving sections", async () => {
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "move-section",
+      targets: '[{"project": "Asana bot test environment", "section": "Done"}]',
+    };
+    github.context.payload = {
+      pull_request: {
+        body: defaultBody,
+      },
+    };
 
-  //   await expect(action.action()).resolves.toHaveLength(1);
+    await expect(action.action()).resolves.toHaveLength(1);
 
-  //   inputs = {
-  //     "asana-pat": asanaPAT,
-  //     action: "move-section",
-  //     targets: '[{"project": "Asana bot test environment", "section": "New"}]',
-  //   };
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "move-section",
+      targets: '[{"project": "Asana bot test environment", "section": "New"}]',
+    };
 
-  //   await expect(action.action()).resolves.toHaveLength(1);
-  // });
+    await expect(action.action()).resolves.toHaveLength(1);
+  });
 
-  // test("completing task", async () => {
-  //   inputs = {
-  //     "asana-pat": asanaPAT,
-  //     action: "complete-task",
-  //     "is-complete": "true",
-  //   };
-  //   github.context.payload = {
-  //     pull_request: {
-  //       body: defaultBody,
-  //     },
-  //   };
+  test("completing task", async () => {
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "complete-task",
+      "is-complete": "true",
+    };
+    github.context.payload = {
+      pull_request: {
+        body: defaultBody,
+      },
+    };
 
-  //   await expect(action.action()).resolves.toHaveLength(1);
-  //   const actualTask = await client.tasks.findById(task.gid);
-  //   expect(actualTask.completed).toBe(true);
-  // });
+    await expect(action.action()).resolves.toHaveLength(1);
+    const actualTask = await client.tasks.findById(task.gid);
+    expect(actualTask.completed).toBe(true);
+  });
 
   test("migrate sections", async () => {
     inputs = {
@@ -191,13 +191,5 @@ describe("asana github actions", () => {
     };
 
     await expect(action.action()).resolves.toHaveLength(1);
-
-    // inputs = {
-    //   "asana-pat": asanaPAT,
-    //   action: "move-section",
-    //   targets: '[{"project": "Asana bot test environment", "section": "New"}]',
-    // };
-
-    // await expect(action.action()).resolves.toHaveLength(1);
   });
 });
