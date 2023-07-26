@@ -43,6 +43,42 @@ async function updateTask(client, taskId, targets) {
   });
 }
 
+async function updateSection(client, targets) {
+  targets.forEach(async (target) => {
+    const targetProject = await client.projects.findById(target.projectId);
+    if (!targetProject) {
+      console.log("Project ID not applicable");
+      core.info(`This Project ID does not exist in Asana.`);
+      return;
+    }
+    let fromSection = await client.sections
+      .findByProject(targetProject.gid)
+      .then((sections) =>
+        sections.find((section) => section.name === target.from)
+      );
+    if (!fromSection) {
+      core.info(
+        `The ${target.from} is not found within ${targetProject.name}.`
+      );
+      return;
+    }
+    const tasksToUpdate = await client.tasks
+      .findBySection(fromSection.gid)
+      .then((tasks) => tasks.data);
+    if (target.fieldId) {
+      for (const taskToUpdate of tasksToUpdate)
+        await client.tasks.update(taskToUpdate.gid, {
+          custom_fields: {
+            [target.fieldId]: target.fieldValue,
+          },
+        });
+      core.info(`Updated tasks from ${target.from}`);
+    } else {
+      core.error(`No custom field ID`);
+    }
+  });
+}
+
 async function migrateSection(client, targets) {
   targets.forEach(async (target) => {
     const targetProject = await client.projects.findById(target.projectId);
@@ -261,6 +297,13 @@ async function action() {
         updatedTask.push(taskId);
         return updatedTask;
       }
+    }
+    case "update-section": {
+      const targetJSON = core.getInput("targets", { required: true });
+      const targets = JSON.parse(targetJSON);
+      const updatedTasks = [];
+      await updateSection(client, targets);
+      return updatedTasks;
     }
     default:
       core.setFailed("unexpected action ${ACTION}");

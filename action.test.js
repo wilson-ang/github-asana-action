@@ -206,4 +206,19 @@ describe("asana github actions", () => {
 
     await expect(action.action()).resolves.toHaveLength(1);
   });
+
+  test("update task", async () => {
+    inputs = {
+      "asana-pat": asanaPAT,
+      action: "update-section",
+      targets: `[{"projectId": "${projectId}", "from": "New", "fieldId": "", "fieldValue":""}]`,
+    };
+    github.context.payload = {
+      pull_request: {
+        body: defaultBody,
+      },
+    };
+
+    await expect(action.action()).resolves.toHaveLength(1);
+  });
 });
