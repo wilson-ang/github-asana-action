@@ -182,7 +182,7 @@ describe("asana github actions", () => {
     inputs = {
       "asana-pat": asanaPAT,
       action: "migrate-section",
-      targets: `[{"projectId": "${projectId}", "to": "QA in Progress",  "from": "Planned"}]`,
+      targets: `[{"projectId": "${projectId}", "to": "Done",  "from": "New"}]`,
     };
     github.context.payload = {
       pull_request: {
