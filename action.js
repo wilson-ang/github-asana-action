@@ -31,6 +31,7 @@ async function migrateSection(client, targets) {
   targets.forEach(async (target) => {
     const targetProject = await client.projects.findById(target.projectId);
     if (!targetProject) {
+      console.log("Project ID not applicable");
       core.info(`This Project ID does not exist in Asana.`);
       return;
     }
@@ -45,10 +46,17 @@ async function migrateSection(client, targets) {
         sections.find((section) => section.name === target.to)
       );
     let tasks = await client.tasks.findBySection(fromSection.gid);
+    if (!fromSection) {
+      core.info(`The from section is missing.`);
+      return;
+    }
+    if (!toSection) {
+      core.info(`The to section is missing.`);
+      return;
+    }
     if (toSection) {
-      tasks.forEach(async (task) => {
+      for (const task of tasks)
         await client.sections.addTask(toSection.gid, { task: task.gid });
-      });
       core.info(`Moved projects from ${target.from} to ${target.to}`);
     } else {
       core.error(`Asana section ${target.to} not found.`);
