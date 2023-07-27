@@ -165,16 +165,15 @@ async function action() {
     PULL_REQUEST = github.context.payload.pull_request,
     REGEX_STRING = `${TRIGGER_PHRASE}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`,
     REGEX = new RegExp(REGEX_STRING, "g");
-  console.log("pull_request", PULL_REQUEST);
 
   const client = await buildClient(ASANA_PAT);
   if (client === null) {
     throw new Error("client authorization failed");
   }
 
-  console.info("looking in body", PULL_REQUEST.body, "regex", REGEX_STRING);
+  console.info("looking in body", PULL_REQUEST?.body, "regex", REGEX_STRING);
   let foundAsanaTasks = [];
-  while ((parseAsanaURL = REGEX.exec(PULL_REQUEST.body)) !== null) {
+  while ((parseAsanaURL = REGEX.exec(PULL_REQUEST?.body)) !== null) {
     const taskId = parseAsanaURL.groups.task;
     if (!taskId) {
       core.error(
@@ -199,14 +198,14 @@ async function action() {
       const statusState =
         !linkRequired || foundAsanaTasks.length > 0 ? "success" : "error";
       core.info(
-        `setting ${statusState} for ${github.context.payload.pull_request.head.sha}`
+        `setting ${statusState} for ${github.context.payload.pull_request?.head.sha}`
       );
       octokit.repos.createStatus({
         ...github.context.repo,
         context: "asana-link-presence",
         state: statusState,
         description: "asana link not found",
-        sha: github.context.payload.pull_request.head.sha,
+        sha: github.context.payload.pull_request?.head.sha,
       });
       break;
     }
