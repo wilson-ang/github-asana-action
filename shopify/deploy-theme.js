@@ -28,7 +28,7 @@ async function deployTheme(
       devPreview ? "--development" : undefined,
       "--json", // Always output JSON for easier parsing
       ...flags.split(" "),
-      // ...["--path", root], // Uncomment and use this if you need to specify the theme directory path
+      ...["--path", "."], // Uncomment and use this if you need to specify the theme directory path
       ...["--theme", themeName],
       ...["--store", store],
       ...["--password", password],
