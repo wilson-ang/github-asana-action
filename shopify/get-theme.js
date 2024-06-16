@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 const getAllThemes = async (SHOPIFY_AUTH) => {
   const res = await fetch(
     `https://${SHOPIFY_AUTH.storeUrl}/admin/api/2024-04/themes.json`,

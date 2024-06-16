@@ -1,4 +1,5 @@
 const { getThemeByName } = require("./get-theme");
+const fetch = require("node-fetch");
 
 const deleteTheme = async (themeName, shopifyAuth) => {
   if (

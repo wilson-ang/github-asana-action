@@ -7,7 +7,7 @@ const createIssueComment = async (message, githubContext, octokit) => {
     return;
   }
 
-  await octokit.issues.createComment({
+  await octokit.rest.issues.createComment({
     ...githubContext.repo,
     issue_number: githubContext.payload.pull_request.number,
     body: message,
