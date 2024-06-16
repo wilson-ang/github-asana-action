@@ -1,6 +1,6 @@
 {
   "name": "github-asana",
-  "version": "4.0.0",
+  "version": "3.0.0",
   "description": "Action to integrate git with asana",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "asana",
     "git"
   ],
-  "author": "Ali Sajid",
+  "author": "Wilson Ang",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/insurify/github-actions/issues"
