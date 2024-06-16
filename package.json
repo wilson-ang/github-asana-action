@@ -2,13 +2,15 @@
   "name": "github-asana",
   "version": "3.0.0",
   "description": "Action to integrate git with asana",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "rimraf dist && tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/insurify/github-actions.git"
+    "url": "git+https://github.com/wilson-ang/github-asana-action.git"
   },
   "keywords": [
     "github-actions",
@@ -17,10 +19,7 @@
   ],
   "author": "Wilson Ang",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/insurify/github-actions/issues"
-  },
-  "homepage": "https://github.com/insurify/github-actions#readme",
+  "homepage": "https://github.com/wilson-ang/github-asana-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.1.1",
@@ -31,6 +30,11 @@
     "semver": "^7.6.2"
   },
   "devDependencies": {
-    "jest": "^26.0.1"
+    "@types/asana": "^0.18.16",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^18.0.0",
+    "@types/semver": "^7.5.8",
+    "jest": "^26.0.1",
+    "typescript": "^4.7.4"
   }
 }
