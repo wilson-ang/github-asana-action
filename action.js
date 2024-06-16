@@ -1,12 +1,7 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const asana = require("asana");
-const {
-  updateTheme,
-  createTheme,
-  deleteTheme,
-  removeTheme,
-} = require("./shopify/shopify");
+const { createTheme, updateTheme, removeTheme } = require("./shopify/shopify");
 const { createIssueComment } = require("./github/github");
 
 async function moveSection(client, taskId, targets) {
@@ -346,7 +341,7 @@ async function action() {
       return comments;
     }
     case "update-theme": {
-      updateTheme(SHOPIFY_AUTH);
+      await updateTheme(SHOPIFY_AUTH);
     }
     case "delete-theme": {
       await removeTheme(SHOPIFY_AUTH);

@@ -1,6 +1,7 @@
 const { checkTheme } = require("./check-theme");
 const { deployTheme } = require("./deploy-theme");
 const { installCli } = require("./install-cli");
+const { deleteTheme } = require("./delete-theme");
 
 const cwd = process.cwd();
 const shopifyExecutable = `${cwd}/node_modules/.bin/shopify`;
@@ -58,11 +59,11 @@ async function updateTheme(shopifyAuth) {
   }
 }
 
-async function removeTheme(SHOPIFY_AUTH) {
+async function removeTheme(shopifyAuth) {
   try {
     console.log("Deleting theme...");
-    console.log("Theme name:", SHOPIFY_AUTH.themeName);
-    await deleteTheme(SHOPIFY_AUTH);
+    console.log("Theme name:", shopifyAuth.themeName);
+    await deleteTheme(shopifyAuth.themeName, shopifyAuth);
   } catch (error) {
     console.error("Error deleting theme:", error);
     throw error;
