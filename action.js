@@ -170,7 +170,7 @@ async function action() {
     SHOPIFY_AUTH = {
       password: core.getInput("shopify-password", { required: true }),
       storeUrl: core.getInput("shopify-store-url", { required: true }),
-      themeName: github.event.pull_request.head.ref,
+      themeName: github.context.payload.pull_request.head.ref,
     };
 
   const client = await buildClient(ASANA_PAT);
@@ -312,8 +312,7 @@ async function action() {
       return updatedTasks;
     }
     case "create-theme": {
-      const themeName = github.event.pull_request.head.ref;
-      const themeUrl = await createTheme(themeName, SHOPIFY_AUTH);
+      const themeUrl = await createTheme(SHOPIFY_AUTH);
       const commentId = core.getInput("comment-id"),
         // htmlText = core.getInput("text", { required: true }),
         isPinned = core.getInput("is-pinned") === "true";
