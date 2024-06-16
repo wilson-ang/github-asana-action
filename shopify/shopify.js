@@ -5,6 +5,14 @@ const { installCli } = require("./install-cli");
 async function createTheme(shopifyAuth) {
   try {
     await installCli();
+    console.log("Shopify CLI installed successfully");
+    console.log("Creating theme...");
+    console.log(
+      "Theme name:",
+      shopifyAuth.themeName,
+      "Store URL:",
+      shopifyAuth.storeUrl
+    );
     const { report } = await deployTheme(
       "/",
       "shopify",
