@@ -313,8 +313,11 @@ async function action() {
     }
     case "create-theme": {
       const themeUrl = await createTheme(SHOPIFY_AUTH);
+
       const commentId = core.getInput("comment-id"),
-        isPinned = core.getInput("is-pinned") === "true";
+        isPinned = core.getInput("is-pinned") === "true",
+        githubToken = core.getInput("github-token", { required: true });
+      const octokit = new github.GitHub(githubToken);
       const htmlText = `\n[Preview Theme]\n${themeUrl}`;
       await createIssueComment(htmlText, github.context, octokit);
       const comments = [];
