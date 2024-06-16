@@ -23,6 +23,7 @@
   "homepage": "https://github.com/insurify/github-actions#readme",
   "dependencies": {
     "@actions/core": "^1.2.0",
+    "@actions/exec": "^1.1.1",
     "@actions/github": "^1.1.0",
     "asana": "^0.17.3",
     "dotenv": "^16.3.1"

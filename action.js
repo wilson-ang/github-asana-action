@@ -1,6 +1,8 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const asana = require("asana");
+const { updateTheme, createTheme } = require("./src/shopify/shopify");
+const { createIssueComment } = require("./src/github/github");
 
 async function moveSection(client, taskId, targets) {
   const task = await client.tasks.findById(taskId);
@@ -164,7 +166,12 @@ async function action() {
     TRIGGER_PHRASE = core.getInput("trigger-phrase") || "",
     PULL_REQUEST = github.context.payload.pull_request,
     REGEX_STRING = `${TRIGGER_PHRASE}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`,
-    REGEX = new RegExp(REGEX_STRING, "g");
+    REGEX = new RegExp(REGEX_STRING, "g"),
+    SHOPIFY_AUTH = {
+      password: core.getInput("shopify-password", { required: true }),
+      storeUrl: core.getInput("shopify-store-url", { required: true }),
+      themeName: github.event.pull_request.head.ref,
+    };
 
   const client = await buildClient(ASANA_PAT);
   if (client === null) {
@@ -303,6 +310,38 @@ async function action() {
       const updatedTasks = [];
       await updateSection(client, targets);
       return updatedTasks;
+    }
+    case "create-theme": {
+      const themeName = github.event.pull_request.head.ref;
+      const themeUrl = await createTheme(themeName, SHOPIFY_AUTH);
+      const commentId = core.getInput("comment-id"),
+        // htmlText = core.getInput("text", { required: true }),
+        isPinned = core.getInput("is-pinned") === "true";
+      htmlText += `\n[Preview Theme]\n${themeUrl}`;
+      await createIssueComment(htmlText, github.context, octokit);
+      const comments = [];
+      for (const taskId of foundAsanaTasks) {
+        if (commentId) {
+          const comment = await findComment(client, taskId, commentId);
+          if (comment) {
+            console.info("found existing comment", comment.gid);
+            continue;
+          }
+        }
+        const comment = await addComment(
+          client,
+          taskId,
+          commentId,
+          htmlText,
+          isPinned
+        );
+        comments.push(comment);
+      }
+      return comments;
+    }
+    case "update-theme": {
+      const themeName = github.event.pull_request.head.ref;
+      const themeUrl = await updateTheme(themeName, SHOPIFY_AUTH);
     }
     default:
       core.setFailed("unexpected action ${ACTION}");
