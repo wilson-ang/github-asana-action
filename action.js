@@ -319,7 +319,8 @@ async function action() {
         githubToken = core.getInput("github-token", { required: true });
       const octokit = new github.GitHub(githubToken);
       const htmlText = `\n[Preview Theme]\n${themeUrl}`;
-      await createIssueComment(htmlText, github.context, octokit);
+      console.log(octokit);
+      // await createIssueComment(htmlText, github.context, octokit);
       const comments = [];
       for (const taskId of foundAsanaTasks) {
         if (commentId) {
