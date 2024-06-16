@@ -1,9 +1,10 @@
+const { checkTheme } = require("./check-theme");
 const { deployTheme } = require("./deploy-theme");
 const { installCli } = require("./install-cli");
 
 const cwd = process.cwd();
 const shopifyExecutable = `${cwd}/node_modules/.bin/shopify`;
-const themeRoot = "./" || cwd;
+const themeRoot = cwd;
 console.log("theme root", themeRoot);
 
 // Function to create a new theme
@@ -18,6 +19,8 @@ async function createTheme(shopifyAuth) {
       "Store URL:",
       shopifyAuth.storeUrl
     );
+    const res = await checkTheme(themeRoot, shopifyExecutable, false);
+    console.log("Check theme report:", res);
     const { report } = await deployTheme(
       themeRoot,
       shopifyExecutable,
@@ -30,6 +33,15 @@ async function createTheme(shopifyAuth) {
     return report.theme.preview_url;
   } catch (error) {
     console.error("Error creating theme:", error);
+    throw error;
+  }
+}
+async function runCheckTheme() {
+  try {
+    const { report } = await checkTheme(themeRoot, shopifyExecutable, false);
+    console.log("Check theme report:", report);
+  } catch (error) {
+    console.error("Error checking theme:", error);
     throw error;
   }
 }
