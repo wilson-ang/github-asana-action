@@ -38,7 +38,6 @@ async function deployTheme(
       ignoreReturnCode: true, // This allows the function to process error output and handle it appropriately
     }
   );
-  console.log(stdout);
   // Log errors to console if any
   if (stderr) {
     console.error("Error during theme deployment:", stderr);

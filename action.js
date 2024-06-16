@@ -1,7 +1,12 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const asana = require("asana");
-const { updateTheme, createTheme } = require("./shopify/shopify");
+const {
+  updateTheme,
+  createTheme,
+  deleteTheme,
+  removeTheme,
+} = require("./shopify/shopify");
 const { createIssueComment } = require("./github/github");
 
 async function moveSection(client, taskId, targets) {
@@ -318,9 +323,8 @@ async function action() {
         isPinned = core.getInput("is-pinned") === "true",
         githubToken = core.getInput("github-token", { required: true });
       const octokit = new github.GitHub(githubToken);
-      const htmlText = `\n[Preview Theme]\n${themeUrl}`;
-      console.log(octokit);
-      // await createIssueComment(htmlText, github.context, octokit);
+      const htmlText = `[Preview Theme]\n${themeUrl}`;
+      await createIssueComment(htmlText, github.context, octokit);
       const comments = [];
       for (const taskId of foundAsanaTasks) {
         if (commentId) {
@@ -342,8 +346,10 @@ async function action() {
       return comments;
     }
     case "update-theme": {
-      const themeName = github.event.pull_request.head.ref;
-      const themeUrl = await updateTheme(themeName, SHOPIFY_AUTH);
+      updateTheme(SHOPIFY_AUTH);
+    }
+    case "delete-theme": {
+      await removeTheme(SHOPIFY_AUTH);
     }
     default:
       core.setFailed("unexpected action ${ACTION}");

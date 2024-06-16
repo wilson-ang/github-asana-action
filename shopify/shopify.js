@@ -5,7 +5,6 @@ const { installCli } = require("./install-cli");
 const cwd = process.cwd();
 const shopifyExecutable = `${cwd}/node_modules/.bin/shopify`;
 const themeRoot = cwd;
-console.log("theme root", themeRoot);
 
 // Function to create a new theme
 async function createTheme(shopifyAuth) {
@@ -13,12 +12,6 @@ async function createTheme(shopifyAuth) {
     await installCli();
     console.log("Shopify CLI installed successfully");
     console.log("Creating theme...");
-    console.log(
-      "Theme name:",
-      shopifyAuth.themeName,
-      "Store URL:",
-      shopifyAuth.storeUrl
-    );
     const { report } = await deployTheme(
       themeRoot,
       shopifyExecutable,
@@ -47,9 +40,12 @@ async function runCheckTheme() {
 // Function to update an existing theme
 async function updateTheme(shopifyAuth) {
   try {
+    await installCli();
+    console.log("Shopify CLI installed successfully");
+    console.log("Updating theme...");
     const { report } = await deployTheme(
-      "/",
-      "shopify",
+      themeRoot,
+      shopifyExecutable,
       shopifyAuth.themeName,
       shopifyAuth.password,
       shopifyAuth.storeUrl,
@@ -57,7 +53,18 @@ async function updateTheme(shopifyAuth) {
     );
     return report.theme.preview_url;
   } catch (error) {
-    console.error("Error updating theme:", error);
+    console.error("Error creating theme:", error);
+    throw error;
+  }
+}
+
+async function removeTheme(SHOPIFY_AUTH) {
+  try {
+    console.log("Deleting theme...");
+    console.log("Theme name:", SHOPIFY_AUTH.themeName);
+    await deleteTheme(SHOPIFY_AUTH);
+  } catch (error) {
+    console.error("Error deleting theme:", error);
     throw error;
   }
 }
@@ -65,4 +72,5 @@ async function updateTheme(shopifyAuth) {
 module.exports = {
   createTheme,
   updateTheme,
+  removeTheme,
 };

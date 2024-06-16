@@ -1,5 +1,4 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
 
 const createIssueComment = async (message, githubContext, octokit) => {
   if (!githubContext.payload.pull_request) {
@@ -8,11 +7,24 @@ const createIssueComment = async (message, githubContext, octokit) => {
     return;
   }
 
-  await octokit.rest.issues.createComment({
+  await octokit.issues.createComment({
     ...githubContext.repo,
     issue_number: githubContext.payload.pull_request.number,
     body: message,
   });
+};
+
+const retrieveShopifyThemeIdFromIssueComment = (commentBody) => {
+  const regexMatch = /<!-- Shopify Theme ID ([0-9]+) -->/.exec(commentBody);
+  if (!regexMatch) {
+    core.error(
+      `Cannot find Shopify Theme ID in the last deployment preview comment.`
+    );
+    return;
+  }
+
+  const shopifyThemeId = parseInt(regexMatch[1]);
+  return shopifyThemeId;
 };
 
 module.exports = { createIssueComment };
