@@ -3,7 +3,8 @@ const { installCli } = require("./install-cli");
 
 const cwd = process.cwd();
 const shopifyExecutable = `${cwd}/node_modules/.bin/shopify`;
-const themeRoot = cwd;
+const themeRoot = "./" || cwd;
+console.log("theme root", themeRoot);
 
 // Function to create a new theme
 async function createTheme(shopifyAuth) {
