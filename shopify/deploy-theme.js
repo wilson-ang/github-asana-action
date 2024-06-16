@@ -25,10 +25,9 @@ async function deployTheme(
     [
       "theme",
       "push",
-      devPreview ? "--dev-preview" : undefined,
+      devPreview ? "--development" : undefined,
       "--json", // Always output JSON for easier parsing
       ...flags.split(" "),
-      ...["--output", "json"],
       // ...["--path", root], // Uncomment and use this if you need to specify the theme directory path
       ...["--theme", themeName],
       ...["--store", store],

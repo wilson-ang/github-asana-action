@@ -1,4 +1,5 @@
 const { exec } = require("@actions/exec");
+const { getExecOutput } = require("@actions/exec");
 const semver = require("semver");
 
 const MIN_VERSION = "3.50.0";
@@ -19,10 +20,13 @@ async function installCli(version) {
       "install",
       "--no-package-lock",
       "--no-save",
+      "-g",
       `@shopify/cli${versionSuffix}`,
       shouldIncludeTheme(version) ? `@shopify/theme${versionSuffix}` : "",
     ].filter(Boolean)
   );
+  const { stdout } = await getExecOutput("shopify", ["--version"]);
+  console.log(stdout.trim());
 }
 
 function shouldIncludeTheme(version) {
