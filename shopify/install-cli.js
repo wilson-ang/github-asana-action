@@ -20,13 +20,10 @@ async function installCli(version) {
       "install",
       "--no-package-lock",
       "--no-save",
-      "-g",
       `@shopify/cli${versionSuffix}`,
       shouldIncludeTheme(version) ? `@shopify/theme${versionSuffix}` : "",
     ].filter(Boolean)
   );
-  const { stdout } = await getExecOutput("shopify", ["--version"]);
-  console.log(stdout.trim());
 }
 
 function shouldIncludeTheme(version) {

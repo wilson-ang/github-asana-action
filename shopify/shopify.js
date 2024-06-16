@@ -1,6 +1,10 @@
 const { deployTheme } = require("./deploy-theme");
 const { installCli } = require("./install-cli");
 
+const cwd = process.cwd();
+const shopifyExecutable = `${cwd}/node_modules/.bin/shopify`;
+const themeRoot = cwd;
+
 // Function to create a new theme
 async function createTheme(shopifyAuth) {
   try {
@@ -14,8 +18,8 @@ async function createTheme(shopifyAuth) {
       shopifyAuth.storeUrl
     );
     const { report } = await deployTheme(
-      "/",
-      "shopify",
+      themeRoot,
+      shopifyExecutable,
       shopifyAuth.themeName,
       shopifyAuth.password,
       shopifyAuth.storeUrl,
