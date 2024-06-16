@@ -4,6 +4,12 @@ inputs:
   asana-pat:
     description: "Asana Public Access Token."
     required: true
+  shopify-password:
+    description: "Shopify password with theme access"
+    required: false
+  shopify-store:
+    description: "Shopify store name"
+    required: false
   action:
     description: "The action to be performed assert-link|add-comment|remove-comment|move-section|complete-task"
     required: false
