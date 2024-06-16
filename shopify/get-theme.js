@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 const getAllThemes = async (SHOPIFY_AUTH) => {
   const res = await fetch(
-    `https://${SHOPIFY_AUTH.storeUrl}/admin/api/2024-04/themes.json`,
+    `https://${SHOPIFY_AUTH.storeUrl}.myshopify.com//admin/api/2024-04/themes.json`,
     {
       headers: {
         "X-Shopify-Access-Token": SHOPIFY_AUTH.password,

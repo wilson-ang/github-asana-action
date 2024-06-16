@@ -17,7 +17,7 @@ const deleteTheme = async (themeName, shopifyAuth) => {
     throw new Error("Cannot delete the main theme");
   }
   const res = await fetch(
-    `https://${shopifyAuth.storeUrl}/admin/api/2024-04/themes/${theme.id}.json`,
+    `https://${shopifyAuth.storeUrl}.myshopify.com/admin/api/2024-04/themes/${theme.id}.json`,
     {
       method: "DELETE",
       headers: {

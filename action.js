@@ -201,7 +201,7 @@ async function action() {
       const githubToken = core.getInput("github-token", { required: true });
       const linkRequired =
         core.getInput("link-required", { required: true }) === "true";
-      const octokit = new github.GitHub(githubToken);
+      const octokit = github.getOctokit(githubToken);
       const statusState =
         !linkRequired || foundAsanaTasks.length > 0 ? "success" : "error";
       core.info(
@@ -317,7 +317,7 @@ async function action() {
       const commentId = core.getInput("comment-id"),
         isPinned = core.getInput("is-pinned") === "true",
         githubToken = core.getInput("github-token", { required: true });
-      const octokit = new github.GitHub(githubToken);
+      const octokit = github.getOctokit(githubToken);
       const htmlText = `[Preview Theme]\n${themeUrl}`;
       await createIssueComment(htmlText, github.context, octokit);
       const comments = [];
@@ -342,9 +342,11 @@ async function action() {
     }
     case "update-theme": {
       await updateTheme(SHOPIFY_AUTH);
+      break;
     }
     case "delete-theme": {
       await removeTheme(SHOPIFY_AUTH);
+      break;
     }
     default:
       core.setFailed("unexpected action ${ACTION}");

@@ -1,17 +1,21 @@
 const core = require("@actions/core");
 
 const createIssueComment = async (message, githubContext, octokit) => {
-  if (!githubContext.payload.pull_request) {
-    // Could be running outside of a PR, if so do not add a comment
-    core.info("GitHub Action is not running from within a PR.");
-    return;
-  }
+  try {
+    if (!githubContext.payload.pull_request) {
+      // Could be running outside of a PR, if so do not add a comment
+      core.info("GitHub Action is not running from within a PR.");
+      return;
+    }
 
-  await octokit.rest.issues.createComment({
-    ...githubContext.repo,
-    issue_number: githubContext.payload.pull_request.number,
-    body: message,
-  });
+    await octokit.rest.issues.createComment({
+      ...githubContext.repo,
+      issue_number: githubContext.payload.pull_request.number,
+      body: message,
+    });
+  } catch (error) {
+    console.log("Error creating issue comment:", error);
+  }
 };
 
 const retrieveShopifyThemeIdFromIssueComment = (commentBody) => {
