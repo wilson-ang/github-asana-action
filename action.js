@@ -1,8 +1,8 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const asana = require("asana");
-const { updateTheme, createTheme } = require("./src/shopify/shopify");
-const { createIssueComment } = require("./src/github/github");
+const { updateTheme, createTheme } = require("./shopify/shopify");
+const { createIssueComment } = require("./github/github");
 
 async function moveSection(client, taskId, targets) {
   const task = await client.tasks.findById(taskId);
