@@ -19,8 +19,6 @@ async function createTheme(shopifyAuth) {
       "Store URL:",
       shopifyAuth.storeUrl
     );
-    const res = await checkTheme(themeRoot, shopifyExecutable, false);
-    console.log("Check theme report:", res);
     const { report } = await deployTheme(
       themeRoot,
       shopifyExecutable,

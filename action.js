@@ -314,9 +314,8 @@ async function action() {
     case "create-theme": {
       const themeUrl = await createTheme(SHOPIFY_AUTH);
       const commentId = core.getInput("comment-id"),
-        // htmlText = core.getInput("text", { required: true }),
         isPinned = core.getInput("is-pinned") === "true";
-      htmlText += `\n[Preview Theme]\n${themeUrl}`;
+      const htmlText = `\n[Preview Theme]\n${themeUrl}`;
       await createIssueComment(htmlText, github.context, octokit);
       const comments = [];
       for (const taskId of foundAsanaTasks) {
