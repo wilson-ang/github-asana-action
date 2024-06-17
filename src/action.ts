@@ -102,6 +102,7 @@ async function action() {
         if (comment) {
           console.info("removing comment", comment.gid);
           try {
+            //@ts-ignore
             await client.stories.delete(comment.gid);
           } catch (error) {
             console.error("rejecting promise", error);

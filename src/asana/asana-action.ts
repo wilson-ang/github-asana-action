@@ -14,10 +14,10 @@ interface UpdateTarget {
   from: string;
   to?: string;
 }
-
+// types not working asana
 async function moveSection(
   client: Client,
-  taskId: string,
+  taskId: string | number,
   targets: TaskTarget[]
 ) {
   const task = await client.tasks.findById(taskId);
@@ -45,7 +45,7 @@ async function moveSection(
 
 async function updateTask(
   client: Client,
-  taskId: string,
+  taskId: string | number,
   targets: UpdateTarget[]
 ) {
   const task = await client.tasks.findById(taskId);
@@ -81,8 +81,9 @@ async function updateSection(client: Client, targets: UpdateTarget[]) {
       return;
     }
     const tasksToUpdate = await client.tasks
+      // @ts-ignore
       .findBySection(fromSection.gid)
-      .then((tasks) => tasks.data);
+      .then((tasks: { data: any }) => tasks.data);
     if (target.fieldId) {
       for (const taskToUpdate of tasksToUpdate) {
         await client.tasks.update(taskToUpdate.gid, {
@@ -119,33 +120,42 @@ async function migrateSection(client: Client, targets: UpdateTarget[]) {
       return;
     }
     const tasksToMigrate = await client.tasks
+      // @ts-ignore
       .findBySection(fromSection.gid)
-      .then((tasks) => tasks.data);
+      .then((tasks: { data: any }) => tasks.data);
     for (const taskToMigrate of tasksToMigrate) {
       await client.sections.addTask(toSection.gid, { task: taskToMigrate.gid });
     }
     core.info(`Moved projects from ${target.from} to ${target.to}`);
   }
 }
-async function findComment(client, taskId, commentId) {
+async function findComment(client: Client, taskId: string | number,, commentId: string) {
   let stories;
   try {
     const storiesCollection = await client.tasks.stories(taskId);
+    // @ts-ignore
     stories = await storiesCollection.fetch(200);
   } catch (error) {
     throw error;
   }
 
-  return stories.find((story) => story.text.indexOf(commentId) !== -1);
+  return stories.find((story: any) => story.text.indexOf(commentId) !== -1);
 }
 
-async function addComment(client, taskId, commentId, text, isPinned) {
+async function addComment(
+  client: Client,
+  taskId: string,
+  commentId: string,
+  text: string,
+  isPinned: boolean
+) {
   if (commentId) {
     text += "\n" + commentId + "\n";
   }
   try {
     const comment = await client.tasks.addComment(taskId, {
       text: text,
+      // @ts-ignore
       is_pinned: isPinned,
     });
     return comment;
@@ -157,6 +167,7 @@ async function addComment(client, taskId, commentId, text, isPinned) {
 async function buildClient(asanaPAT: string): Promise<Client> {
   return asana.Client.create({
     defaultHeaders: { "asana-enable": "new-sections,string_ids" },
+    // @ts-ignore
     logAsanaChangeWarnings: false,
   })
     .useAccessToken(asanaPAT)
@@ -164,11 +175,12 @@ async function buildClient(asanaPAT: string): Promise<Client> {
 }
 
 export {
-  addComment,
-  buildClient,
-  findComment,
-  migrateSection,
-  moveSection,
-  updateSection,
-  updateTask,
+    addComment,
+    buildClient,
+    findComment,
+    migrateSection,
+    moveSection,
+    updateSection,
+    updateTask
 };
+
