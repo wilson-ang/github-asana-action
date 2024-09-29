@@ -24,9 +24,11 @@ async function action() {
   const PULL_REQUEST = github.context.payload.pull_request;
   const REGEX_STRING: string = `${TRIGGER_PHRASE}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`;
   const REGEX = new RegExp(REGEX_STRING, "g");
+  const shopifyActions = ["create-theme", "update-theme", "delete-theme"];
+  const isShopifyAction = shopifyActions.includes(ACTION);
   const shopifyAuth: ShopifyAuth = {
-    password: core.getInput("shopify-password", { required: true }),
-    storeUrl: core.getInput("shopify-store-url", { required: true }),
+    password: core.getInput("shopify-password", { required: isShopifyAction }),
+    storeUrl: core.getInput("shopify-store-url", { required: isShopifyAction }),
     themeName: PULL_REQUEST?.head.ref || "default-ref",
   };
 
@@ -157,6 +159,7 @@ async function action() {
         updatedTask.push(taskId);
         return updatedTask;
       }
+      break;
     }
     case "update-section": {
       const targetJSON = core.getInput("targets", { required: true });
@@ -202,6 +205,10 @@ async function action() {
       await removeTheme(shopifyAuth);
       break;
     }
+    // case "check-deployment": {
+    //   await checkDeployment(github.context);
+    //   break;
+    // }
     default:
       core.setFailed("unexpected action ${ACTION}");
   }

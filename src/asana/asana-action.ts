@@ -129,7 +129,11 @@ async function migrateSection(client: Client, targets: UpdateTarget[]) {
     core.info(`Moved projects from ${target.from} to ${target.to}`);
   }
 }
-async function findComment(client: Client, taskId: string | number,, commentId: string) {
+async function findComment(
+  client: Client,
+  taskId: string | number,
+  commentId: string
+) {
   let stories;
   try {
     const storiesCollection = await client.tasks.stories(taskId);
@@ -175,12 +179,11 @@ async function buildClient(asanaPAT: string): Promise<Client> {
 }
 
 export {
-    addComment,
-    buildClient,
-    findComment,
-    migrateSection,
-    moveSection,
-    updateSection,
-    updateTask
+  addComment,
+  buildClient,
+  findComment,
+  migrateSection,
+  moveSection,
+  updateSection,
+  updateTask,
 };
-

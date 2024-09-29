@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateTask = exports.updateSection = exports.moveSection = exports.migrateSection = exports.findComment = exports.buildClient = exports.addComment = void 0;
 const core = __importStar(require("@actions/core"));
 const asana = __importStar(require("asana"));
+// types not working asana
 function moveSection(client, taskId, targets) {
     return __awaiter(this, void 0, void 0, function* () {
         const task = yield client.tasks.findById(taskId);
@@ -90,6 +91,7 @@ function updateSection(client, targets) {
                 return;
             }
             const tasksToUpdate = yield client.tasks
+                // @ts-ignore
                 .findBySection(fromSection.gid)
                 .then((tasks) => tasks.data);
             if (target.fieldId) {
@@ -125,6 +127,7 @@ function migrateSection(client, targets) {
                 return;
             }
             const tasksToMigrate = yield client.tasks
+                // @ts-ignore
                 .findBySection(fromSection.gid)
                 .then((tasks) => tasks.data);
             for (const taskToMigrate of tasksToMigrate) {
@@ -140,6 +143,7 @@ function findComment(client, taskId, commentId) {
         let stories;
         try {
             const storiesCollection = yield client.tasks.stories(taskId);
+            // @ts-ignore
             stories = yield storiesCollection.fetch(200);
         }
         catch (error) {
@@ -157,6 +161,7 @@ function addComment(client, taskId, commentId, text, isPinned) {
         try {
             const comment = yield client.tasks.addComment(taskId, {
                 text: text,
+                // @ts-ignore
                 is_pinned: isPinned,
             });
             return comment;
@@ -171,6 +176,7 @@ function buildClient(asanaPAT) {
     return __awaiter(this, void 0, void 0, function* () {
         return asana.Client.create({
             defaultHeaders: { "asana-enable": "new-sections,string_ids" },
+            // @ts-ignore
             logAsanaChangeWarnings: false,
         })
             .useAccessToken(asanaPAT)
