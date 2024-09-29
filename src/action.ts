@@ -16,6 +16,7 @@ import {
   removeTheme,
   updateTheme,
 } from "./shopify/shopify";
+import { getVercelPreviewURL } from "./vercel/get-vercel-preview-url";
 
 async function action() {
   const ASANA_PAT: string = core.getInput("asana-pat", { required: true });
@@ -205,10 +206,38 @@ async function action() {
       await removeTheme(shopifyAuth);
       break;
     }
-    // case "check-deployment": {
-    //   await checkDeployment(github.context);
-    //   break;
-    // }
+    case "vercel-deployment": {
+      const githubToken = core.getInput("github-token", { required: true });
+      const octokit = github.getOctokit(githubToken);
+      const previewURL = await getVercelPreviewURL(github.context, octokit);
+      const htmlText = `[Preview Theme]\n${previewURL}`;
+      await createIssueComment(htmlText, github.context, octokit);
+
+      const commentId = core.getInput("comment-id");
+      const isPinned = core.getInput("is-pinned") === "true";
+      const comments = [];
+
+      for (const taskId of foundAsanaTasks) {
+        if (commentId) {
+          const existingComment = await findComment(client, taskId, commentId);
+          if (existingComment) {
+            console.info("Found existing comment", existingComment.gid);
+            continue;
+          }
+        }
+
+        const comment = await addComment(
+          client,
+          taskId,
+          commentId,
+          htmlText,
+          isPinned
+        );
+        comments.push(comment);
+      }
+
+      return comments;
+    }
     default:
       core.setFailed("unexpected action ${ACTION}");
   }

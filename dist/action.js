@@ -39,6 +39,7 @@ const asana_action_1 = require("./asana/asana-action");
 Object.defineProperty(exports, "buildClient", { enumerable: true, get: function () { return asana_action_1.buildClient; } });
 const github_action_1 = require("./github/github-action");
 const shopify_1 = require("./shopify/shopify");
+const get_vercel_preview_url_1 = require("./vercel/get-vercel-preview-url");
 function action() {
     return __awaiter(this, void 0, void 0, function* () {
         const ASANA_PAT = core.getInput("asana-pat", { required: true });
@@ -204,10 +205,28 @@ function action() {
                 yield (0, shopify_1.removeTheme)(shopifyAuth);
                 break;
             }
-            // case "check-deployment": {
-            //   await checkDeployment(github.context);
-            //   break;
-            // }
+            case "vercel-deployment": {
+                const githubToken = core.getInput("github-token", { required: true });
+                const octokit = github.getOctokit(githubToken);
+                const previewURL = yield (0, get_vercel_preview_url_1.getVercelPreviewURL)(github.context, octokit);
+                const htmlText = `[Preview Theme]\n${previewURL}`;
+                yield (0, github_action_1.createIssueComment)(htmlText, github.context, octokit);
+                const commentId = core.getInput("comment-id");
+                const isPinned = core.getInput("is-pinned") === "true";
+                const comments = [];
+                for (const taskId of foundAsanaTasks) {
+                    if (commentId) {
+                        const existingComment = yield (0, asana_action_1.findComment)(client, taskId, commentId);
+                        if (existingComment) {
+                            console.info("Found existing comment", existingComment.gid);
+                            continue;
+                        }
+                    }
+                    const comment = yield (0, asana_action_1.addComment)(client, taskId, commentId, htmlText, isPinned);
+                    comments.push(comment);
+                }
+                return comments;
+            }
             default:
                 core.setFailed("unexpected action ${ACTION}");
         }

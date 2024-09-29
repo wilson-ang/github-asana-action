@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
 
-interface GitHubContext extends Context {
+export interface GitHubContext extends Context {
   repo: {
     owner: string;
     repo: string;
