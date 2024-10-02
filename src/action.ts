@@ -209,7 +209,24 @@ async function action() {
     case "vercel-deployment": {
       const githubToken = core.getInput("github-token", { required: true });
       const octokit = github.getOctokit(githubToken);
-      const previewURL = await getVercelPreviewURL(github.context, octokit);
+      let previewURL = null;
+      let attempts = 0;
+      const maxAttempts = 10;
+      const delay = 20000; // 20 seconds
+
+      while (!previewURL && attempts < maxAttempts) {
+        previewURL = await getVercelPreviewURL(github.context, octokit);
+        if (!previewURL) {
+          attempts++;
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
+
+      if (!previewURL) {
+        core.setFailed("No Vercel preview URL found after maximum attempts");
+        return;
+      }
+
       const htmlText = `[Preview Theme]\n${previewURL}`;
       await createIssueComment(htmlText, github.context, octokit);
 
