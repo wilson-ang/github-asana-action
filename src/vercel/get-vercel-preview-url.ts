@@ -25,9 +25,7 @@ export const getVercelPreviewURL = async (
     const vercelComment = comments.find(
       (comment) =>
         comment.user?.login === "vercel[bot]" &&
-        comment.body?.includes(
-          "via=pr-comment-visit-preview-link&passThrough=1"
-        )
+        comment.body?.includes("nextjs-commerce-git")
     );
 
     if (!vercelComment) {
@@ -36,7 +34,7 @@ export const getVercelPreviewURL = async (
     }
 
     const vercelPreviewUrlMatch = vercelComment.body?.match(
-      /https:\/\/vercel\.live\/open-feedback\/[^?\s]+\?via=pr-comment-visit-preview-link&passThrough=1/
+      /https:\/\/nextjs-commerce-git[^?\s]+\.vercel\.app/
     );
 
     if (!vercelPreviewUrlMatch) {
@@ -44,11 +42,11 @@ export const getVercelPreviewURL = async (
       return null;
     }
 
-    const cleanVercelPreviewUrl = `https://${
-      vercelPreviewUrlMatch[0].split("open-feedback/")[1].split("?")[0]
-    }`;
+    // const cleanVercelPreviewUrl = `https://${
+    //   vercelPreviewUrlMatch[0].split("open-feedback/")[1].split("?")[0]
+    // }`;
 
-    return cleanVercelPreviewUrl;
+    return vercelPreviewUrlMatch[0];
   } catch (error) {
     console.error("Error fetching Vercel preview URL:", error);
     return null;

@@ -32,7 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildClient = exports.action = void 0;
+exports.buildClient = void 0;
+exports.action = action;
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
 const asana_action_1 = require("./asana/asana-action");
@@ -246,4 +247,3 @@ function action() {
         }
     });
 }
-exports.action = action;

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.installCli = void 0;
+exports.installCli = installCli;
 const exec_1 = require("@actions/exec");
 const semver_1 = __importDefault(require("semver"));
 const MIN_VERSION = "3.50.0";
@@ -32,7 +32,6 @@ function installCli(version) {
         ].filter(Boolean));
     });
 }
-exports.installCli = installCli;
 function shouldIncludeTheme(version) {
     if (!version || version.includes("experimental")) {
         return false;

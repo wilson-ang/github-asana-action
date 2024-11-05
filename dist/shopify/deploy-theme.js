@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deployTheme = void 0;
+exports.deployTheme = deployTheme;
 const exec_1 = require("@actions/exec");
 /**
  * Deploy a Shopify theme to the specified store.
@@ -22,13 +22,13 @@ const exec_1 = require("@actions/exec");
  * @param flags Additional flags as a single string, will be split into an array.
  * @returns A promise resolving to an object with the exit code and parsed JSON output from the command.
  */
-function deployTheme(root, shopifyExecutable = "shopify", themeName, password, store, devPreview = false, flags = "") {
-    return __awaiter(this, void 0, void 0, function* () {
+function deployTheme(root_1) {
+    return __awaiter(this, arguments, void 0, function* (root, shopifyExecutable = "shopify", themeName, password, store, devPreview = false, flags = "") {
         const commandArgs = [
             "theme",
             "push",
             devPreview ? "--development" : undefined,
-            "--json",
+            "--json", // Ensures JSON output for parsing
             ...flags.split(" "),
             "--path",
             root,
@@ -53,4 +53,3 @@ function deployTheme(root, shopifyExecutable = "shopify", themeName, password, s
         };
     });
 }
-exports.deployTheme = deployTheme;

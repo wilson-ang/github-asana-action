@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTheme = void 0;
+exports.deleteTheme = deleteTheme;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const get_theme_1 = require("./get-theme");
 function deleteTheme(themeName, shopifyAuth) {
@@ -39,4 +39,3 @@ function deleteTheme(themeName, shopifyAuth) {
         return data;
     });
 }
-exports.deleteTheme = deleteTheme;
