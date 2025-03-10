@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkTheme = checkTheme;
+exports.checkTheme = void 0;
 const exec_1 = require("@actions/exec");
-function checkTheme(root_1) {
-    return __awaiter(this, arguments, void 0, function* (root, shopifyExecutable = "shopify", devPreview = true, flags = "") {
+function checkTheme(root, shopifyExecutable = "shopify", devPreview = true, flags = "") {
+    return __awaiter(this, void 0, void 0, function* () {
         const { exitCode, stdout, stderr } = yield (0, exec_1.getExecOutput)(shopifyExecutable, [
             "theme",
             "check",
@@ -31,3 +31,4 @@ function checkTheme(root_1) {
         };
     });
 }
+exports.checkTheme = checkTheme;

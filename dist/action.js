@@ -32,8 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildClient = void 0;
-exports.action = action;
+exports.buildClient = exports.action = void 0;
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
 const asana_action_1 = require("./asana/asana-action");
@@ -47,7 +46,7 @@ function action() {
         const ACTION = core.getInput("action", { required: true });
         const TRIGGER_PHRASE = core.getInput("trigger-phrase") || "";
         const PULL_REQUEST = github.context.payload.pull_request;
-        const REGEX_STRING = `${TRIGGER_PHRASE}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`;
+        const REGEX_STRING = `${TRIGGER_PHRASE}(?:\\s*)https:\\/\\/app\\.asana\\.com\\/\\d+\\/(?:\\d+|\\w+)\\/(?:project|projects)\\/\\d+\\/(?:task|tasks)\\/(?<task>\\d+)`;
         const REGEX = new RegExp(REGEX_STRING, "g");
         const shopifyActions = ["create-theme", "update-theme", "delete-theme"];
         const isShopifyAction = shopifyActions.includes(ACTION);
@@ -247,3 +246,4 @@ function action() {
         }
     });
 }
+exports.action = action;

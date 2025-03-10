@@ -32,13 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addComment = addComment;
-exports.buildClient = buildClient;
-exports.findComment = findComment;
-exports.migrateSection = migrateSection;
-exports.moveSection = moveSection;
-exports.updateSection = updateSection;
-exports.updateTask = updateTask;
+exports.updateTask = exports.updateSection = exports.moveSection = exports.migrateSection = exports.findComment = exports.buildClient = exports.addComment = void 0;
 const core = __importStar(require("@actions/core"));
 const asana = __importStar(require("asana"));
 // types not working asana
@@ -63,6 +57,7 @@ function moveSection(client, taskId, targets) {
         }
     });
 }
+exports.moveSection = moveSection;
 function updateTask(client, taskId, targets) {
     return __awaiter(this, void 0, void 0, function* () {
         const task = yield client.tasks.findById(taskId);
@@ -80,6 +75,7 @@ function updateTask(client, taskId, targets) {
         }
     });
 }
+exports.updateTask = updateTask;
 function updateSection(client, targets) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const target of targets) {
@@ -114,6 +110,7 @@ function updateSection(client, targets) {
         }
     });
 }
+exports.updateSection = updateSection;
 function migrateSection(client, targets) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const target of targets) {
@@ -140,6 +137,7 @@ function migrateSection(client, targets) {
         }
     });
 }
+exports.migrateSection = migrateSection;
 function findComment(client, taskId, commentId) {
     return __awaiter(this, void 0, void 0, function* () {
         let stories;
@@ -154,6 +152,7 @@ function findComment(client, taskId, commentId) {
         return stories.find((story) => story.text.indexOf(commentId) !== -1);
     });
 }
+exports.findComment = findComment;
 function addComment(client, taskId, commentId, text, isPinned) {
     return __awaiter(this, void 0, void 0, function* () {
         if (commentId) {
@@ -172,6 +171,7 @@ function addComment(client, taskId, commentId, text, isPinned) {
         }
     });
 }
+exports.addComment = addComment;
 function buildClient(asanaPAT) {
     return __awaiter(this, void 0, void 0, function* () {
         return asana.Client.create({
@@ -183,3 +183,4 @@ function buildClient(asanaPAT) {
             .authorize();
     });
 }
+exports.buildClient = buildClient;

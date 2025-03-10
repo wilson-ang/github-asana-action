@@ -23,7 +23,7 @@ async function action() {
   const ACTION: string = core.getInput("action", { required: true });
   const TRIGGER_PHRASE: string = core.getInput("trigger-phrase") || "";
   const PULL_REQUEST = github.context.payload.pull_request;
-  const REGEX_STRING: string = `${TRIGGER_PHRASE}(?:\s*)https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`;
+  const REGEX_STRING: string = `${TRIGGER_PHRASE}(?:\\s*)https:\\/\\/app\\.asana\\.com\\/\\d+\\/(?:\\d+|\\w+)\\/(?:project|projects)\\/\\d+\\/(?:task|tasks)\\/(?<task>\\d+)`;
   const REGEX = new RegExp(REGEX_STRING, "g");
   const shopifyActions = ["create-theme", "update-theme", "delete-theme"];
   const isShopifyAction = shopifyActions.includes(ACTION);

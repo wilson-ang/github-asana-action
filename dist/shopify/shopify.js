@@ -9,10 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTheme = createTheme;
-exports.runCheckTheme = runCheckTheme;
-exports.updateTheme = updateTheme;
-exports.removeTheme = removeTheme;
+exports.removeTheme = exports.updateTheme = exports.runCheckTheme = exports.createTheme = void 0;
 const check_theme_1 = require("./check-theme");
 const delete_theme_1 = require("./delete-theme");
 const deploy_theme_1 = require("./deploy-theme");
@@ -37,6 +34,7 @@ function createTheme(shopifyAuth) {
         }
     });
 }
+exports.createTheme = createTheme;
 // Function to check theme
 function runCheckTheme() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -50,6 +48,7 @@ function runCheckTheme() {
         }
     });
 }
+exports.runCheckTheme = runCheckTheme;
 // Function to update an existing theme
 function updateTheme(shopifyAuth) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -66,6 +65,7 @@ function updateTheme(shopifyAuth) {
         }
     });
 }
+exports.updateTheme = updateTheme;
 // Function to remove a theme
 function removeTheme(shopifyAuth) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -80,3 +80,4 @@ function removeTheme(shopifyAuth) {
         }
     });
 }
+exports.removeTheme = removeTheme;
