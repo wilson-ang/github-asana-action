@@ -230,7 +230,7 @@ async function action() {
       const branchName = PULL_REQUEST?.head.ref || "";
       const previewUrlWithBypass = new URL(previewURL);
       previewUrlWithBypass.searchParams.set("bypass-ip", "1");
-      const htmlText = `[Preview Link]\n${branchName}\n${previewUrlWithBypass.toString()}`;
+      const htmlText = `[Preview Link]\nBranch: ${branchName}\n${previewUrlWithBypass.toString()}`;
       await createIssueComment(htmlText, github.context, octokit);
 
       const commentId = core.getInput("comment-id");
