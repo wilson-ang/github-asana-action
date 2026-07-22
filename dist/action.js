@@ -223,7 +223,10 @@ function action() {
                     core.setFailed("No Vercel preview URL found after maximum attempts");
                     return;
                 }
-                const htmlText = `[Preview Theme]\n${previewURL}`;
+                const branchName = (PULL_REQUEST === null || PULL_REQUEST === void 0 ? void 0 : PULL_REQUEST.head.ref) || "";
+                const previewUrlWithBypass = new URL(previewURL);
+                previewUrlWithBypass.searchParams.set("bypass-ip", "1");
+                const htmlText = `[Preview Link]\n${branchName}\n${previewUrlWithBypass.toString()}`;
                 yield (0, github_action_1.createIssueComment)(htmlText, github.context, octokit);
                 const commentId = core.getInput("comment-id");
                 const isPinned = core.getInput("is-pinned") === "true";
